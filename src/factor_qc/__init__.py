@@ -1,8 +1,7 @@
 """factor-qc: fail-closed quality gate for backtests.
 
-One numpy-only engine for the standard backtest-overfit statistics —
-Deflated Sharpe Ratio, Probability of Backtest Overfitting (CSCV),
-Harvey-Liu multiple-testing haircut, Minimum Track Record Length — wrapped
+One numpy-only engine for the standard backtest-overfit statistics 鈥?Deflated Sharpe Ratio, Probability of Backtest Overfitting (CSCV),
+Harvey-Liu multiple-testing haircut, Minimum Track Record Length 鈥?wrapped
 in a gate that refuses to judge a backtest that does not declare how many
 configurations were tried.
 """
@@ -19,7 +18,7 @@ from .stats import (
     skew_kurt,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "build_check_artifact",
@@ -32,3 +31,4 @@ __all__ = [
     "sharpe_ratio",
     "skew_kurt",
 ]
+
