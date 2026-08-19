@@ -1,7 +1,7 @@
 """factor-qc: fail-closed quality gate for backtests.
 
-One numpy-only engine for the standard backtest-overfit statistics 鈥?Deflated Sharpe Ratio, Probability of Backtest Overfitting (CSCV),
-Harvey-Liu multiple-testing haircut, Minimum Track Record Length 鈥?wrapped
+One numpy-only engine for the standard backtest-overfit statistics —Deflated Sharpe Ratio, Probability of Backtest Overfitting (CSCV),
+Harvey-Liu multiple-testing haircut, Minimum Track Record Length —wrapped
 in a gate that refuses to judge a backtest that does not declare how many
 configurations were tried.
 """

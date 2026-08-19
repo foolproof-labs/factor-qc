@@ -2,11 +2,11 @@
 
 A **fail-closed quality gate** for backtests: one numpy-only engine covering
 Deflated Sharpe Ratio, Probability of Backtest Overfitting (CSCV), the
-Harvey-Liu multiple-testing haircut and Minimum Track Record Length 鈥?graded P0/P1/P2, and **it refuses to judge a backtest that will not declare
+Harvey-Liu multiple-testing haircut and Minimum Track Record Length —graded P0/P1/P2, and **it refuses to judge a backtest that will not declare
 how many configurations were tried**. Python 3.11+, one dependency
 (`numpy`), Windows / Linux / macOS.
 
-**Status:** v0.1 鈥?alpha. The statistics are battle-tested inside a
+**Status:** v0.1 —alpha. The statistics are battle-tested inside a
 production research pipeline and validated against published reference
 values, but this standalone package is new: expect the CLI to shift before
 v1.0.
@@ -15,19 +15,19 @@ v1.0.
 
 The standard story: you try 200 factor configurations, the best one shows a
 Sharpe of 1.65, you feel great. The honest story: with 200 trials of pure
-noise, *someone* is going to show a Sharpe of 1.65 鈥?the expected maximum of
-200 zero-true-SR trials 鈥?and it will not be your skill, it will be your
+noise, *someone* is going to show a Sharpe of 1.65 —the expected maximum of
+200 zero-true-SR trials —and it will not be your skill, it will be your
 selection bias.
 
 Most backtest tooling computes statistics and prints reports. `factor-qc`
 is a **gate**: it decides, with graded severity, whether a candidate may
-pass 鈥?and its default answer is *no*:
+pass —and its default answer is *no*:
 
-- **P0 (fatal)** 鈥?DSR below threshold, PBO above threshold, haircut Sharpe
-  below floor, MinTRL longer than the sample 鈫?the candidate must not pass.
-- **P1 (warning)** 鈥?weak PSR vs zero, short sample, aggressive trial count
-  鈫?proceed with eyes open.
-- **P2 (info)** 鈥?non-normal moments, tiny trial count 鈫?recorded, no action.
+- **P0 (fatal)** —DSR below threshold, PBO above threshold, haircut Sharpe
+  below floor, MinTRL longer than the sample →?the candidate must not pass.
+- **P1 (warning)** —weak PSR vs zero, short sample, aggressive trial count
+  →?proceed with eyes open.
+- **P2 (info)** —non-normal moments, tiny trial count →?recorded, no action.
 
 ## Philosophy
 
@@ -35,22 +35,22 @@ pass 鈥?and its default answer is *no*:
 
 The one non-negotiable input is `n_trials`: the honest count of
 configurations you tried. Without it there is no deflation benchmark
-([Bailey & L贸pez de Prado 2014](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551)),
+([Bailey & López de Prado 2014](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551)),
 no haircut ([Harvey, Liu & Zhu 2016, RFS](https://doi.org/10.1093/rfs/hhv059)),
 no track-record floor
-([Bailey & L贸pez de Prado 2018, JPM](https://ideas.repec.org/a/rsk/journl/0journalpm-v44n5.html))
+([Bailey & López de Prado 2018, JPM](https://ideas.repec.org/a/rsk/journl/0journalpm-v44n5.html))
 and no overfitting probability
-([Bailey, Borwein, L贸pez de Prado & Zhu 2017, JCF](https://escholarship.org/uc/item/4w1110bb)).
-Refuse to declare, and the gate refuses to judge 鈥?that asymmetry is the
+([Bailey, Borwein, López de Prado & Zhu 2017, JCF](https://escholarship.org/uc/item/4w1110bb)).
+Refuse to declare, and the gate refuses to judge —that asymmetry is the
 point. `qc check` exits non-zero on any P0 failure, so it drops into CI,
 pre-commit hooks and research gates as a hard blocker, not a suggestion.
 
 Two design commitments that keep it honest:
 
-1. **numpy only, no scipy** 鈥?the standard-normal inverse CDF is Acklam's
+1. **numpy only, no scipy** —the standard-normal inverse CDF is Acklam's
    rational approximation with one Newton refinement; every number in the
    report is reproducible from the code in this repo, no hidden black box.
-2. **PBO is optional but explicit** 鈥?without a trials matrix the gate says
+2. **PBO is optional but explicit** —without a trials matrix the gate says
    PBO *was not computed*, and the DSR cross-trial variance degrades to a
    conservative single-trial estimate. Absence of evidence is reported as
    absence, never as evidence.
@@ -99,24 +99,24 @@ Flags: `--returns` (required), `--trials` (optional), `--n-trials`
 
 | Check | Severity | Method | Reference |
 | --- | --- | --- | --- |
-| `dsr` | P0 | Deflated Sharpe Ratio: P(SR > E[max SR of N trials]) under non-normal moments | [Bailey & L贸pez de Prado (2014), JPM 40(5)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) |
-| `pbo` | P0 | Probability of Backtest Overfitting via Combinatorially-Symmetric Cross-Validation (12,870 splits at n_blocks=16) | [Bailey, Borwein, L贸pez de Prado & Zhu (2017), JCF](https://escholarship.org/uc/item/4w1110bb) |
+| `dsr` | P0 | Deflated Sharpe Ratio: P(SR > E[max SR of N trials]) under non-normal moments | [Bailey & López de Prado (2014), JPM 40(5)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551) |
+| `pbo` | P0 | Probability of Backtest Overfitting via Combinatorially-Symmetric Cross-Validation (12,870 splits at n_blocks=16) | [Bailey, Borwein, López de Prado & Zhu (2017), JCF](https://escholarship.org/uc/item/4w1110bb) |
 | `haircut_sharpe` | P0 | Multiple-testing haircut of the Sharpe ratio (Bonferroni/Holm/BHY) | [Harvey & Liu (2015)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2528780) |
-| `mintrl` | P0 | Minimum Track Record Length: observations needed before SR is significant | [Bailey & L贸pez de Prado (2018), JPM 44(5)](https://ideas.repec.org/a/rsk/journl/0journalpm-v44n5.html) |
-| `psr_vs_zero` | P1 | Probabilistic Sharpe vs zero | [Bailey & L贸pez de Prado (2012)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2168747) |
-| `sample_length` | P1 | 鈮?252 observations | 鈥?|
-| `trial_aggression` | P1 | n_trials 鈮?n_obs / 5 | 鈥?|
-| `return_moments` | P2 | skew 鈮?0, kurtosis 鈮?3 | 鈥?|
-| `trial_count` | P2 | n_trials 鈮?5 | 鈥?|
+| `mintrl` | P0 | Minimum Track Record Length: observations needed before SR is significant | [Bailey & López de Prado (2018), JPM 44(5)](https://ideas.repec.org/a/rsk/journl/0journalpm-v44n5.html) |
+| `psr_vs_zero` | P1 | Probabilistic Sharpe vs zero | [Bailey & López de Prado (2012)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2168747) |
+| `sample_length` | P1 | ≥252 observations | —|
+| `trial_aggression` | P1 | n_trials ≥n_obs / 5 | —|
+| `return_moments` | P2 | skew ≥0, kurtosis ≥3 | —|
+| `trial_count` | P2 | n_trials ≥5 | —|
 
 The P0 set mirrors the spirit of [Harvey, Liu & Zhu (2016),
-"鈥nd the Cross-Section of Expected Returns"](https://doi.org/10.1093/rfs/hhv059):
+"“And the Cross-Section of Expected Returns"](https://doi.org/10.1093/rfs/hhv059):
 a factor must survive multiple-testing correction to earn the right to be
 called a factor. The gate is the machine version of that editorial stance.
 
 ## Performance note
 
-CSCV enumerates C(n_blocks, n_blocks/2) splits 鈥?12,870 at the default 16.
+CSCV enumerates C(n_blocks, n_blocks/2) splits —12,870 at the default 16.
 On large trial matrices (T=1000, N=200) that takes minutes; use
 `--n-blocks 8` (70 splits) or `10` (252 splits) for interactive speed at
 slightly coarser granularity.
@@ -133,11 +133,11 @@ and 3.12. Issues are handled on weekends; pull requests are welcome.
 
 ## Related work
 
-- [Bailey & L贸pez de Prado (2014), The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551)
-- [Bailey, Borwein, L贸pez de Prado & Zhu (2017), The Probability of Backtest Overfitting](https://escholarship.org/uc/item/4w1110bb)
-- [Harvey, Liu & Zhu (2016), 鈥nd the Cross-Section of Expected Returns (RFS)](https://doi.org/10.1093/rfs/hhv059)
+- [Bailey & López de Prado (2014), The Deflated Sharpe Ratio](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2460551)
+- [Bailey, Borwein, López de Prado & Zhu (2017), The Probability of Backtest Overfitting](https://escholarship.org/uc/item/4w1110bb)
+- [Harvey, Liu & Zhu (2016), “And the Cross-Section of Expected Returns (RFS)](https://doi.org/10.1093/rfs/hhv059)
 - [Harvey & Liu (2021), Lucky Factors (JFE)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2528780)
-- [Mobarekeh & L贸pez de Prado (2024), Backtest Overfitting in the Machine Learning Era (SSRN 4778909)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4778909) 鈥?why OOS methods still need honest trial accounting
+- [Mobarekeh & López de Prado (2024), Backtest Overfitting in the Machine Learning Era (SSRN 4778909)](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4778909) —why OOS methods still need honest trial accounting
 
 ## Project family
 
