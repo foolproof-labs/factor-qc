@@ -1,5 +1,12 @@
 # factor-qc
 
+## 中文说明
+
+`factor-qc` 是一个面向量化回测的质量闸门，也适用于 A 股因子研究。
+它把 DSR、PBO、Harvey-Liu 多重检验折减和 MinTRL 放在同一次检查中，
+并要求明确填写尝试过的参数组合数量。数据不完整或指标未达到门槛时，
+工具会给出分级结果并默认不放行；它不保证策略盈利，也不会替研究者选择因子。
+
 A **fail-closed quality gate** for backtests: one numpy-only engine covering
 Deflated Sharpe Ratio, Probability of Backtest Overfitting (CSCV), the
 Harvey-Liu multiple-testing haircut and Minimum Track Record Length —graded P0/P1/P2, and **it refuses to judge a backtest that will not declare
