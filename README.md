@@ -1,5 +1,10 @@
 # factor-qc
 
+![PyPI version](https://img.shields.io/pypi/v/factor-qc.svg)
+![PyPI downloads](https://img.shields.io/pypi/dm/factor-qc.svg)
+![CI](https://github.com/foolproof-labs/factor-qc/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/badge/license-MIT-blue)
+
 ## 中文说明
 
 `factor-qc` 是一个面向量化回测的质量闸门，也适用于 A 股因子研究。
